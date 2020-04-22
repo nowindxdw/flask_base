@@ -1,0 +1,105 @@
+<section class="content-header">
+    <h1>
+        用户管理
+        <small>13 new messages</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Mailbox</li>
+    </ol>
+</section>
+<style type="text/css">
+
+</style>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{ title }}</h3>
+                </div>
+                {% if error %}
+                    <li style="color: #f00000;">{{ error }}</li>
+                {% else %}
+                    <table class="table table-bordered table-hover role_table">
+                        {% if user %}
+                            <tr>
+                                <th>ID</th>
+                                <td><input id="user_id" class="form-control"
+                                           readonly="readonly" value="{{ user.id }}"></td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <th>用户名</th>
+                            <td><input id="username" class="form-control" value="{{ user.username }}"></td>
+                        </tr>
+                        <tr>
+                            <th>密码</th>
+                            <td><input type="password" id="password" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <th>管理员姓名</th>
+                            <td><input id="admin_name" class="form-control" value="{{ user.admin_name }}"></td>
+                        <tr>
+                        <tr>
+                            <th>分组</th>
+                            <td><select id="group_id" class="form-control">
+                                {% for g in ug_choices %}
+                                    {% if g[0] == group_id %}
+                                        <option value="{{ group_id }}" selected="selected">{{ g[1] }}</option>
+                                    {% else %}
+                                        <option value="{{ g[0] }}">{{ g[1] }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select></td>
+                        <tr>
+                        <tr>
+                            <th>邮箱</th>
+                            <td><input id="email" class="form-control" value="{{ user.email }}" placeholder="必填"></td>
+                        <tr>
+                    </table>
+                    <div class="box-footer">
+                        <button class="col-sm-3 col-sm-offset-4 btn btn-primary" onclick="edit_user()">
+                            <i class="fa fa-envelope-o"></i>保存
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="../../static/plugins/layer/layer.js"></script>
+<script>
+
+    var op = {{ op | tojson }};
+
+    function edit_user() {
+        var username = $('#username').val();
+        var password = $('#password').val();
+        var admin_name = $('#admin_name').val();
+        var email = $('#email').val();
+        var group_id = $('#group_id option:checked').val();
+        var params = {username: username, password: password, admin_name: admin_name,
+            email: email, op: op, group_id: group_id};
+        if (op === 'edit') {
+            params['user_id'] = $("#user_id").val();
+        }
+        $.post(
+            "/user/user_edit",
+            params,
+            function(data) {
+                if (data.status === 0) {
+                    layer.alert(data.msg, {}, function (index) {
+                        myajax('/user/user_list');
+                        layer.close(index);
+                    });
+                } else {
+                    layer.msg(data.msg);
+                }
+            },
+            'json'
+        );
+    }
+
+</script>

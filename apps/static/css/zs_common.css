@@ -1,0 +1,82 @@
+
+.detail, .change {
+    height: 30px;
+    background: #60B9F4;
+}
+
+.delete {
+    height: 30px;
+    background: #FF6666;
+}
+
+#page_table {
+    border: solid thin #D4DFE3;
+    border-collapse: collapse;
+    margin: auto;
+}
+
+#page_table td {
+    padding: 3px 10px;
+    border: solid thin #D4DFE3;
+    font-size: 17px;
+}
+
+.game_detail_table {
+    border: solid thin #D4DFE3;
+    border-collapse: collapse;
+    margin: 30px 50px;
+}
+
+.game_detail_table td {
+    border: solid thin #D4DFE3;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.condition_option {
+    width: 50%;
+    padding: 3px 4px;
+    height: 30px;
+}
+
+.screen_table tr {
+    height: 51px;
+}
+
+.screen_table th {
+    width: 150px;
+    font-size: 15px;
+    padding-left: 10px;
+}
+
+.screen_table, .screen_table td, .screen_table th {
+    border: 1px solid #f4f4f4;
+}
+
+.screen_table td {
+    width: 300px;
+}
+
+.screen_table input, .screen_table select {
+    width: 270px;
+    height: 35px;
+    margin-left: 15px;
+    font-size: 15px;
+}
+
+.screen_table {
+    margin: auto;
+}
+
+.search_btn {
+    font-size: 16px;
+    color: white;
+    background-image: url('../../static/images/blue_btn.png');
+    width: 70px;
+    height: 40px;
+    background-size: 100% 100%;
+}
+
+.common_page {
+    cursor: pointer
+}

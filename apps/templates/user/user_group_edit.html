@@ -1,0 +1,241 @@
+<section class="content-header">
+    <h1>
+        用户分组管理
+        <small>13 new messages</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Mailbox</li>
+    </ol>
+</section>
+<style type="text/css">
+    .role_left, .role_right {
+        width: 40%;
+        float: left;
+        font-size: 15px;
+    }
+
+    .role_right {
+        margin-left: 20px;
+    }
+
+    .batch_btn_img {
+        height: 30px;
+        width: 42px;
+    }
+
+    .batch_btn {
+        margin: 5px auto;
+    }
+
+    .batch_btn_div {
+        text-align: center;
+    }
+
+    .limit_auth_word {
+        font-size: 15px;
+        font-weight: bold;
+        float: left;
+        width: 40%;
+        text-align: center;
+    }
+
+</style>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{ title }}</h3>
+                </div>
+                {% if error %}
+                    <li style="color: #f00000;">{{ error }}</li>
+                {% else %}
+                    <table class="table table-bordered table-hover role_table">
+                        {% if user_group %}
+                            <tr>
+                                <th>ID</th>
+                                <td><input id="group_id" class="form-control"
+                                           readonly="readonly" value="{{ user_group.FID }}"></td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <th>分组名</th>
+                            <td><input id="group_name" class="form-control" value="{{ user_group.group_name }}"></td>
+                        </tr>
+                        <tr>
+                            <th>分组权限描述</th>
+                            <td><textarea id="group_desc" class="form-control">{{ user_group.group_desc }}</textarea>
+                            </td>
+                        <tr>
+                        <tr>
+                            <td colspan="2">
+                                <div>
+                                    <div class="limit_auth_word">未有权限</div>
+                                    <div class="limit_auth_word" style="margin-left: 20px">已有权限</div>
+                                </div>
+                                <div style="margin-top: 5px">
+                                    <div class="role_left">
+                                        <input class="form-control keyword" placeholder="关键字搜索"
+                                               oninput="role_select(this, 'left')">
+                                        <div class="batch_btn_div">
+                                            <button class="batch_btn" onclick="batch_checkout('left_to_right')">
+                                                <img src="../../static/images/btn_right.png" class="batch_btn_img">
+                                            </button>
+                                        </div>
+                                        <select id="role_st_list" class="form-control"
+                                                multiple="multiple" style="height: 200px">
+                                            {% for ps in perss_list %}
+                                                <option value="{{ ps.value }}"
+                                                        onclick="role_checkout(this, 'right')">{{ ps.text }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="role_right">
+                                        <input class="form-control keyword" placeholder="关键字搜索"
+                                               oninput="role_select(this, 'right')">
+                                        <div class="batch_btn_div">
+                                            <button class="batch_btn" onclick="batch_checkout('right_to_left')">
+                                                <img src="../../static/images/btn_left.png" class="batch_btn_img"></button>
+                                        </div>
+                                        <select id="role_st_choice" class="form-control"
+                                                multiple="multiple" style="height: 200px">
+                                            {% for ps in have_perss_list %}
+                                                <option value="{{ ps.value }}"
+                                                        onclick="role_checkout(this, 'left')">{{ ps.text }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="box-footer">
+                        <button class="col-sm-3 col-sm-offset-4 btn btn-primary" onclick="add_group()">
+                            <i class="fa fa-envelope-o"></i>保存
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="../../static/plugins/layer/layer.js"></script>
+<script>
+    // 隐藏权限列表中,分组已有的权限
+    var role_list = $('#role_st_list');
+    var role_choice = $('#role_st_choice');
+    var op = {{ op | tojson }};
+    choice_init();
+
+    function role_select(obj, way) {
+        var keyword = $(obj).val().trim();
+        if (way === 'left') {
+            choice_init(true, keyword);
+        } else {
+            role_choice.children("option").each(function () {
+                if (this.text.indexOf(keyword) === -1) { // 已有权限但不存在关键词的,隐藏
+                    $(this).hide();
+                } else {
+                    $(this).show()
+                }
+            });
+        }
+    }
+
+    function choice_init(select = false, keyword = '') {
+        if (select) {
+            // 记录管理组已有的权限
+            var had_roles = [];
+            role_choice.children("option").each(function () {
+                had_roles.push($(this).val());
+            });
+            if (keyword === '') {
+                role_list.children("option").each(function () {
+                    // 已有权限,隐藏
+                    if (had_roles.indexOf($(this).val()) !== -1) {
+                        $(this).hide();
+                    } else { // 未有权限,显示
+                        $(this).show();
+                    }
+                });
+                return
+            }
+
+            role_list.children("option").each(function () {
+                // 非已有且包含关键词的权限显示
+                if ((had_roles.indexOf($(this).val()) === -1) && (this.text.indexOf(keyword) !== -1)) {
+                    $(this).show();
+                } else { // 隐藏不包含关键词 或 已有的权限
+                    $(this).hide();
+                }
+            });
+        } else {
+            role_choice.children("option").each(function () {
+                $('#role_st_list option[value="' + $(this).val() + '"]').hide();
+            });
+        }
+    }
+
+    function role_checkout(obj, way) {
+        if (way === 'right') {
+            var new_content = '<option value="' + $(obj).val() +
+                '" onclick="role_checkout(this, \'left\')">' + obj.text + '</option>';
+            role_choice.append(new_content);
+            $(obj).hide();
+        } else {
+            $(obj).remove();
+            $('#role_st_list option[value="' + $(obj).val() + '"]').show();
+        }
+    }
+
+    function batch_checkout(op) {
+        if (op === 'left_to_right') {
+            role_list.children('option').each(function () {
+                if ($(this).css("display") === "block") {
+                    $(this).hide();
+                    var new_content = '<option value="' + $(this).val() +
+                        '" onclick="role_checkout(this, \'left\')">' + this.text + '</option>';
+                    role_choice.append(new_content);
+                }
+            })
+        } else {
+            role_choice.children('option').each(function () {
+                if ($(this).css("display") === "block") {
+                    $(this).remove();
+                    $('#role_st_list option[value="' + $(this).val() + '"]').show();
+                }
+            })
+        }
+    }
+
+    function add_group() {
+        var group_name = $('#group_name').val();
+        var group_desc = $('#group_desc').val();
+        var role = [];
+        $("#role_st_choice option").each(function () {
+            role.push($(this).val());
+        });
+        var params = {group_name: group_name, group_desc: group_desc, role: role, op: op};
+        if (op === 'edit') {
+            params['group_id'] = $("#group_id").val();
+        }
+        $.post(
+            "/user/user_group_edit",
+            params,
+            function(data) {
+                if (data.status === 0) {
+                    layer.alert(data.msg, {}, function (index) {
+                        myajax('/user/user_group_list');
+                        layer.close(index);
+                    });
+                } else {
+                    layer.msg(data.msg);
+                }
+            },
+            'json'
+        );
+    }
+
+</script>
