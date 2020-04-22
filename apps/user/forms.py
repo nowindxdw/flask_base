@@ -1,38 +1,35 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-from flask.ext.wtf import Form
-from wtforms import StringField, BooleanField, PasswordField, SelectField, SelectMultipleField, TextAreaField
-from wtforms.validators import DataRequired, Length, Email
+from flask_wtf import FlaskForm
+from wtforms import StringField, BooleanField, PasswordField, SelectField, SelectMultipleField, TextAreaField,SubmitField
+from wtforms.validators import DataRequired, Length, Email,ValidationError, DataRequired, Email, EqualTo
+
+from apps.user.model import User
 
 
-class LoginForm(Form):
-    username = StringField('username', validators=[DataRequired(), Length(1, 64)])
-    password = PasswordField('Password', validators=[DataRequired(message=u"必填项")])
-    # captcha = TextField('captcha', validators=[Required()])
-    remember_me = BooleanField('remember_me', default=False)
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Sign In')
 
 
-class BaseUserForm(Form):
-    email = StringField('email', validators=[DataRequired(), Length(1, 64), Email()])
-    password = PasswordField('Password', validators=[DataRequired(message=u"必填项"),
-                                                     Length(max=64, message=u"最长64字符")])
-    role = SelectMultipleField('role', choices=[], validators=[DataRequired(message=u'必选项')])
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Register')
 
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError('Please use a different username.')
 
-class AddUserForm(BaseUserForm):
-    pass
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is not None:
+            raise ValidationError('Please use a different email address.')
 
-
-class ModifyUserForm(BaseUserForm):
-    email = SelectField('email', validators=[DataRequired()], choices=[])
-    password = PasswordField('Password', validators=[Length(max=64, message=u"最长64字符")])
-
-
-class DelUserForm(Form):
-    email = SelectField('email', validators=[DataRequired()], choices=[])
-
-
-class ResetPassword(Form):
-    password = PasswordField('Password', validators=[DataRequired(message=u"必填项"),
-                                                     Length(max=64, message=u"最长64字符")])

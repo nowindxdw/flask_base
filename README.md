@@ -49,6 +49,14 @@ deactivate
 use pip install below  package or `pip install -r requirements.txt  -i https://pypi.doubanio.com/simple `
 install latest version Flask :
 ```bash
-pip install Flask flask_sqlalchemy flask_login flask_redis flask_httpauth flask_login pymysql -i https://pypi.doubanio.com/simple 
+pip install Flask flask_sqlalchemy flask_login flask_redis flask_httpauth flask_login flask_wtf  pymysql -i https://pypi.doubanio.com/simple 
 ```
+
+
+###3 user auth
+HTTPBaisic
+在restful设计中，用户认证模式通常使用json web token，而不会使用传统的HTTP Basic认证（传入账号密码）
+token认证模式如下：在请求header中加入token
+
+JWT(json web token) on branch jwtAuth
 

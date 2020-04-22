@@ -31,7 +31,7 @@ def file_list():
 @file.route("/file/mange_json", methods=['GET', 'POST'])
 def mange_json():
     """ json管理页面 """
-    return render_template('filejson_manage_index.html')
+    return render_template('file/json_manage_index.html')
 
 
 @file.route("/file/json_list", methods=['GET', 'POST'])

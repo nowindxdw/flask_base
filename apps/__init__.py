@@ -22,8 +22,7 @@ app.config.from_object('config')
 log.init_log('log/tailor.log', level=logging.DEBUG)
 
 # mysql
-db = SQLAlchemy(app,
-                session_options={"autoflush": False})
+db = SQLAlchemy(app, session_options={"autoflush": False})
 
 db.session.configure(bind=create_engine(
     app.config['SQLALCHEMY_BINDS']['base'],
@@ -45,8 +44,6 @@ rs = FlaskRedis(app, socket_connect_timeout=0.5, socket_timeout=0.5)
 
 
 
-
-
 @app.teardown_request
 def teardown_request(exeception):
     db.session.close()
@@ -56,7 +53,7 @@ user_auth = HTTPBasicAuth()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
-login_manager.login_view = 'user.login'
+login_manager.login_view = 'login'
 login_manager.init_app(app)
 
 @app.before_request
