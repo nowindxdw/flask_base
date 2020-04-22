@@ -1,6 +1,9 @@
 
 ## Flask base
 
+- 详细解析flask的安装和使用
+- 对于Flask的扩展包并且实际配置于代码中
+- 结合《深入理解Flask(JackStouffer)》一书对flask框架各方面应用都有涉及
 
 ###1 virtual env
 1.Install ENV
@@ -60,3 +63,32 @@ token认证模式如下：在请求header中加入token
 
 JWT(json web token) on branch jwtAuth
 
+#### structure
+
+|.env35                         #virtual env
+
+|---apps                        # app main files 
+    
+|   |---file                    # application for url path /file/*
+
+|   |---user                    # application for url path /user/* 
+     
+|   |---static                  # static folder for templates use
+
+|   |---templates               # jinja2 html templates
+
+|   |---utils                   # customer utils for public useage
+
+|   |---__init__.py             # init app for db, blueprint etc.
+
+|   |---log.py                  # print runtime log
+
+|   |---setting.py              # system setting not changable
+
+|---test                        # folder for put unitest case
+
+|---config.py                   # all config should in here
+
+|---requirements.txt            # env package list
+
+|---run.py                      # start file 
