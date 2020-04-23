@@ -68,9 +68,7 @@ JWT(json web token) on branch jwt_auth
 |.env35                         #virtual env
 
 |---apps                        # app main files 
-    
-|   |---file                    # application for url path /file/*
-
+     
 |   |---user                    # application for url path /user/* 
      
 |   |---static                  # static folder for templates use

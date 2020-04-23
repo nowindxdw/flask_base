@@ -1,14 +1,13 @@
 from datetime import datetime
-from apps import db, login_manager
+from apps import app,db
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
-#flask_login UserMixin implement all method need: is_authenticated	是登陆用户，返回TRUE；否则False
-# is_active	是活动用户，返回TRUE；否则False
-# is_anonymous	是匿名用户，返回TRUE；否则False
-# get_id() 返回用户唯一标识，用unicode编码，即使是数字类型也要转换成unicode
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+#token认证模式
 
 
-class User(UserMixin,db.Model):
+
+class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -24,8 +23,18 @@ class User(UserMixin,db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-
-@login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+    # 生成token
+    @staticmethod
+    def create_token(user_id):
+        """
+        生成token
+        :param user_id: 用户id
+        :return:
+        """
+        # 第一个参数是内部的私钥，这里写在配置信息里，如果只是测试可以写死
+        # 第二个参数是有效期（秒）
+        s = Serializer(app.config['SECRET_KEY'], expires_in=app.config['TOKEN_EXPIRATION'])
+        # 接收用户id转换与编码
+        token = s.dumps({"id": user_id}).decode('ascii')
+        return token
 

@@ -5,7 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 BASEDIR = basedir
 DEBUG = False
 SECRET_KEY = 'This is a secret key forexample'
-
+TOKEN_EXPIRATION = 300   # 300s = 5min
 # not end with else throw  AttributeError: 'tuple' object has no attribute 'drivername'
 SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:rootpassword@127.0.0.1/test?charset=utf8" # base管理
 

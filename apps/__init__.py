@@ -9,8 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from flask_redis import FlaskRedis
 from sqlalchemy import create_engine
-from flask_httpauth import HTTPBasicAuth
-from flask_login import LoginManager
+from flask_httpauth import HTTPTokenAuth
 
 from apps import log
 
@@ -49,12 +48,9 @@ def teardown_request(exeception):
     db.session.close()
     # websession.close()
 
-user_auth = HTTPBasicAuth()
 
-login_manager = LoginManager()
-login_manager.session_protection = 'strong'
-login_manager.login_view = 'login'
-login_manager.init_app(app)
+user_auth = HTTPTokenAuth()
+
 
 @app.before_request
 def before_request():
@@ -80,6 +76,3 @@ def after_request(response):
 from apps.user import user
 app.register_blueprint(user)
 
-# Register File Blueprint
-from apps.file import file
-app.register_blueprint(file)
