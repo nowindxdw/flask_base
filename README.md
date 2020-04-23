@@ -61,7 +61,7 @@ HTTPBaisic
 在restful设计中，用户认证模式通常使用json web token，而不会使用传统的HTTP Basic认证（传入账号密码）
 token认证模式如下：在请求header中加入token
 
-JWT(json web token) on branch jwtAuth
+JWT(json web token) on branch jwt_auth
 
 #### structure
 
