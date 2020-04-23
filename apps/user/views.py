@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-
-
 import json
 import os
 from flask import render_template,request,g, flash, redirect, url_for, request
@@ -61,7 +59,7 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for('index'))
+        return redirect(url_for('user.index'))
     return render_template('login.html', title='Sign In', form=form)
 
 
